@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CBIR System</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		function make_query_call(){
+			$('#exampleModalCenter').modal('show');
+			document.getElementById("started-text").innerHTML = " ";
+			var form_data = new FormData($('#upload-query-info')[0]);
+			form_data.append('limit', $('#limit :selected').val());
+			console.log($('#limit :selected').val());
+			$.ajax({
+				type: 'POST',
+				url: '/query',
+				data : form_data,
+				processData: false,
+				contentType: false,
+				success: function(ret_obj){
+							$('#exampleModalCenter').modal('hide');
+							console.log(ret_obj);
+							document.getElementById("result-box").innerHTML = ret_obj;
+						}
+			});
+		}
+		$(document).ready(function(){
+			$('#submit-query').attr("disabled", "disabled");
+			$("#submit-query").click(function(){
+				make_query_call();
+			})
+			$(".custom-file-input").on("change", function() {
+				var fileName = $(this).val().split("\\").pop();
+				$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			});
+		});
+		function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            img = new Image();
+
+            reader.onload = function (e) {
+            	$('#submit-query').removeAttr("disabled");
+            	var x,y;
+            	img.src = e.target.result;
+            	img.onload = function(){
+            		$('#query-image-text').html(input.files[0].name+"<br>"+this.width+" X "+this.height);
+            		$('#display-text').css({"font-size": "1.2em;", "padding-left": "65px"});
+	            	$('#display-text').html("Query Image<br>");
+	            }
+                $('#query-image')
+                    .attr('src', e.target.result).css({'max-width':"250px"});
+                
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+	</script>
+
+	<style type="text/css">
+		#heading-cbir{
+			text-align: center;
+			margin-top: 20px;
+			font-size: 2.7em;
+			font-weight: 400;
+		}
+		#query-box{
+			margin-top: 40px;
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		#query-display-box{
+			padding-left: 13px;
+			margin-bottom: 30px;
+		}
+		#result-box{
+			padding-left: 30px !important;
+			padding-right: 30px !important;
+		}
+		.btn{
+			width: 100%;
+		}
+		/*
+		.image-row{
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0 4px;
+		}
+
+		.image-column{
+			flex: 20%;
+			max-width: 20%;
+			padding:0 4px;
+		}
+		.image-column img{
+			margin-top: 8px;
+			vertical-align: middle;
+			width: 100%;
+		}
+		*/
+		#query-image-text{
+			padding-top: 30px;
+			margin-left: -40px;
+		}
+		.image-row{
+			margin-bottom: 10px;
+		}
+		.image-column{
+			padding: 10px;
+		}
+		.image-column > div{
+			height: 230px;
+
+		}
+		.image-inner{
+			background-size: contain; 
+			background-position: top; 
+			background-repeat: no-repeat;
+			vertical-align: middle;
+		}
+		.image-header{
+			text-align: center;
+			font-weight: 300;
+			font-size: 1.2em;
+			font-family: sans-serif;
+			color: rgba(0, 0, 0, 0.7);
+			padding: 2px;
+			height: 15px !important;
+		}
+		#display-text{
+			font-size: 300;
+
+		}
+	</style>
+</head>
+<body>
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        Loading results, please wait.
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+	<div class="container-fluid">
+		<h1 class="display-4" id="heading-cbir">CBIR SYSTEM</h1>	
+	</div>
+	<div id="query-box">
+		<form id="upload-query-info" method="post" enctype="multipart/form-data">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-4">
+						<div class="custom-file mb-3">
+							<input type="file" name="query_img" aria-describedby="query_img" id="query_img" class="custom-file-input" onchange="readURL(this);">
+							<label class="custom-file-label" for="query_img">Choose file</label>
+						</div>
+					</div>
+					<!--
+					<div class="col-4">
+						<input type="text" name="query_text" class="form-control" id="query_text" value="" placeholder="Enter Query Text">
+					</div>-->
+					<div class="col-4">
+						<select class="custom-select" id="limit">
+							<option>5</option>
+							<option>10</option>
+							<option>15</option>
+							<option>20</option>
+							<option>25</option>
+							<option>30</option>
+						</select>
+					</div>
+					<div class="col-4">
+						 <button class="btn btn-success" id="submit-query" type="button">Submit</button>
+					</div>
+				</div>			
+			</div>
+		</form>
+	</div>
+	<div id="query-display-box">
+		<div class="container-fluid">
+			<div class="row">
+				<h4 id="display-text"></h4>
+			</div>
+			<div class="row">
+				
+				<div class="col-3">
+					<img src="" id="query-image">
+<!-- 					<div id="query-image">
+						
+					</div> -->
+				</div>
+				<div class="col-3" id="query-image-text">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="result-box" class="container-fluid">
+		<h4 id="started-text" style="font-weight: 200;">Browse an image, choose the limit and click submit to see the results.</h4>
+		<!-- <div class="row image-row">
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/3.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/2.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/31.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/33.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/63.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/89.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/42.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+
+			<div class="col-3 image-column">
+				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/3.jpg');">
+				</div>
+				<div class="image-header">
+					Africans 1
+				</div>
+			</div>
+		</div>-->
+	</div>
+		<!--
+		<div class="image-row">
+			<div class="image-column">
+				<img src="Dataset/Apple/Apple_1.jpg">
+				<img src="Dataset/Apple/Apple_9.jpg">
+				<img src="Dataset/Apple/Apple_2.jpg">
+			</div>
+			<div class="image-column">
+				<img src="Dataset/Apple/Apple_6.jpg">
+				<img src="Dataset/Apple/Apple_23.jpg">
+				<img src="Dataset/Apple/Apple_9.jpg">
+			</div>
+			<div class="image-column">
+				<img src="Dataset/Apple/Apple_4.jpg">
+				<img src="Dataset/Apple/Apple_13.jpg">
+			</div>
+			<div class="image-column">
+				<img src="Dataset/Apple/Apple_23.jpg">
+				<img src="Dataset/Apple/Apple_9.jpg">
+				<img src="Dataset/Apple/Apple_61.jpg">
+				<img src="Dataset/Apple/Apple_23.jpg">
+			</div>
+			<div class="image-column">
+				<img src="Dataset/Apple/Apple_23.jpg">
+				<img src="Dataset/Apple/Apple_61.jpg">
+			</div>
+		</div>
+	-->
+	</div>
+</body>
+</html>
