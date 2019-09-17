@@ -43,6 +43,7 @@
             img = new Image();
 
             reader.onload = function (e) {
+            	document.getElementById("result-box").innerHTML = " ";
             	$('#submit-query').removeAttr("disabled");
             	var x,y;
             	img.src = e.target.result;
