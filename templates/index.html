@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 		function make_query_call(){
 			$('#exampleModalCenter').modal('show');
-			document.getElementById("started-text").innerHTML = " ";
+			document.getElementById("result-box").innerHTML = " ";
 			var form_data = new FormData($('#upload-query-info')[0]);
 			form_data.append('limit', $('#limit :selected').val());
 			console.log($('#limit :selected').val());
@@ -204,7 +204,7 @@
 		</div>
 	</div>
 	<div id="result-box" class="container-fluid">
-		<h4 id="started-text" style="font-weight: 200;">Browse an image, choose the limit and click submit to see the results.</h4>
+		<h4 class="display-4" style="font-weight: 200; font-size: 1.2em;">Browse an image, choose the limit and click submit to see the results.</h4>
 		<!-- <div class="row image-row">
 			<div class="col-3 image-column">
 				<div class="image-inner" style="background-image: url('static/images/CBIR_10/Africans/3.jpg');">
