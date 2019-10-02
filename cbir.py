@@ -65,29 +65,27 @@ def initial_setup():
 	file.close()
 
 def generate_html_code(paths):
-	code = ''' <div class="row image-row">'''
-	for i in range(len(paths)):
-		code += '''<div class="col-3 image-column">
-		<div class="image-inner" style="background-image: url('{}');">
-		</div>
-		<div class="image-header">
-		{}	
-		</div>
-		</div>
-		'''.format(paths[i], paths[i].split("/")[-2]+" "+paths[i].split("/")[-1].split(".")[0])
-	code += '''</div>'''
-	return code
+    code = ''' <div class="row image-row">'''
+    for i in range(len(paths)):
+        code += '''<div class="col-2">
+        <img src="{}">
+        <figcaption class="img-caption">{}</figcaption>
+        </div>
+        '''.format(paths[i], paths[i].split("/")[-2]+" "+paths[i].split("/")[-1].split(".")[0])
+    code += '''</div>'''
+    return code
 
 def find_images(test_image_path, limit, text):
-	if text == None:
-		paths = []
-		img = cv2.imread(test_image_path)
-		result = searcher.search(img, limit)
-		for v,k in result:
-			# if v < 10.0:
-			paths.append("static/images/CBIR_10/"+str(CBIR_10_data[k][1])+"/"+str(CBIR_10_data[k][0]))
-		print(result)
-		return generate_html_code(paths)
+    if text == None:
+        paths = []
+        img = cv2.imread(test_image_path)
+        if limit == "default":
+            limit = 1000
+        result = searcher.search(img, limit)
+        for v,k in result:
+            paths.append("static/images/CBIR_10/"+str(CBIR_10_data[k][1])+"/"+str(CBIR_10_data[k][0]))
+        print(result)
+        return generate_html_code(paths)
 
 searcher = Searcher()
 initial_setup()
